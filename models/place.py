@@ -20,6 +20,21 @@ def use_db():
     return os.getenv('HBNB_TYPE_STORAGE') == 'db'
 
 
+class AmenitiesList(list):
+    ''' class for a list of amenities '''
+    def __init__(self, ls, on_append):
+        ''' constructor for the list'''
+        list.__init__(ls, self)
+        self.on_append = on_append
+        # for v in ls:
+        #     self.append(v)
+
+    def append(self, v):
+        ''' appends an object to the list '''
+        super().append(v)
+        self.on_append(v)
+
+
 def get_reviews(self):
     ''' gets list of reviews of the current place '''
     from models import storage
@@ -33,8 +48,10 @@ def get_amenities(self):
     from models import storage
     from models.amenity import Amenity
 
-    return [v for v in storage.all(Amenity).values()
-            if v.id in self.amenity_ids]
+    def on_append(v):
+        self.amenity_ids.append(v.id)
+    return AmenitiesList([v for v in storage.all(Amenity).values()
+                          if v.id in self.amenity_ids], on_append)
 
 
 def set_amenities(self, ls):
