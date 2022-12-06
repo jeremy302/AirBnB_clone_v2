@@ -1,21 +1,20 @@
 #!/usr/bin/python3
 """ Module for testing file storage"""
+import os
 import unittest
+
 from models.base_model import BaseModel
 from models import storage
-import os
 
 
+@unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'file',
+                 "Skipping file storage tests")
 class test_fileStorage(unittest.TestCase):
     """ Class to test the file storage method """
 
     def setUp(self):
         """ Set up test environment """
-        del_list = []
-        for key in storage._FileStorage__objects.keys():
-            del_list.append(key)
-        for key in del_list:
-            del storage._FileStorage__objects[key]
+        storage.all().clear()
 
     def tearDown(self):
         """ Remove storage file at end of tests """
@@ -29,22 +28,26 @@ class test_fileStorage(unittest.TestCase):
         self.assertEqual(len(storage.all()), 0)
 
     def test_new(self):
-        """ New object is correctly added to __objects """
+        """ New object is added to __objects after only saving """
         new = BaseModel()
-        for obj in storage.all().values():
-            temp = obj
-        self.assertTrue(temp is obj)
+        # for obj in storage.all().values():
+        #     temp = obj
+        self.assertTrue(new not in storage.all().values())
+        new.save()
+        self.assertTrue(new in storage.all().values())
 
     def test_all(self):
         """ __objects is properly returned """
         new = BaseModel()
+        new.save()
         temp = storage.all()
         self.assertIsInstance(temp, dict)
 
     def test_base_model_instantiation(self):
-        """ File is not created on BaseModel save """
+        """ File IS created on BaseModel save """
         new = BaseModel()
-        self.assertFalse(os.path.exists('file.json'))
+        new.save()
+        self.assertTrue(os.path.exists('file.json'))
 
     def test_empty(self):
         """ Data is saved to file """
@@ -57,16 +60,17 @@ class test_fileStorage(unittest.TestCase):
     def test_save(self):
         """ FileStorage save method """
         new = BaseModel()
+        new.save()
         storage.save()
         self.assertTrue(os.path.exists('file.json'))
 
     def test_reload(self):
         """ Storage file is successfully loaded to __objects """
         new = BaseModel()
-        storage.save()
+        new.save()
         storage.reload()
-        for obj in storage.all().values():
-            loaded = obj
+        items = list(storage.all().values())
+        loaded = items[0]
         self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
 
     def test_reload_empty(self):
@@ -97,13 +101,38 @@ class test_fileStorage(unittest.TestCase):
     def test_key_format(self):
         """ Key is properly formatted """
         new = BaseModel()
+        new.save()
         _id = new.to_dict()['id']
-        for key in storage.all().keys():
-            temp = key
+        temp = list(storage.all().keys())[0]
+        # for key in storage.all().keys():
+        #     temp = key
         self.assertEqual(temp, 'BaseModel' + '.' + _id)
 
     def test_storage_var_created(self):
         """ FileStorage object storage created """
         from models.engine.file_storage import FileStorage
-        print(type(storage))
+        # print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+
+    def test_delete(self):
+        ''' tests if objects are deleted'''
+        new = BaseModel()
+        new.save()
+        self.assertTrue(new in storage.all().values())
+        storage.delete(new)
+        self.assertEqual(storage.all(), {})
+
+    def test_all(self):
+        ''' test all() for different classes '''
+        from models.amenity import Amenity
+
+        obj1 = BaseModel()
+        obj2 = Amenity()
+        obj1.save()
+        obj2.save()
+        self.assertTrue(obj1 in storage.all().values() and
+                        obj2 in storage.all().values())
+        self.assertTrue(obj1 in storage.all(BaseModel).values() and
+                        obj2 not in storage.all(BaseModel).values())
+        self.assertTrue(obj1 not in storage.all(Amenity).values() and
+                        obj2 in storage.all(Amenity).values())
