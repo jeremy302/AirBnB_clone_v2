@@ -50,8 +50,7 @@ def get_amenities(self):
 
     def on_append(v):
         self.amenity_ids.append(v.id)
-    return AmenitiesList([v for v in storage.all(Amenity).values()
-                          if v.id in self.amenity_ids], on_append)
+    return [v for v in storage.all(Amenity).values() if v.id in self.amenity_ids]
 
 
 def set_amenities(self, v):
@@ -61,7 +60,9 @@ def set_amenities(self, v):
 
     if type(v) is Amenity and  v not in self.amenity_ids:
         self.amenity_ids.append(v)
-    # self.amenity_ids = [v.id for v in ls]
+        return
+    elif type(v) == list or type(v) == AmenitiesList:
+        self.amenity_ids = [i.id for i in v]
 
 
 class Place(BaseModel, Base):
