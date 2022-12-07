@@ -22,15 +22,17 @@ user = os.getenv('HBNB_MYSQL_USER')
 passwd = os.getenv('HBNB_MYSQL_PWD')
 dbname = os.getenv('HBNB_MYSQL_DB')
 
+
 def rstr():
     ''' returns a random string'''
     return str(uuid.uuid4())
+
 
 @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
                  "Skipping db storage tests")
 class test_dbStorage(unittest.TestCase):
     """ Class to test the db storage method """
-    
+
     def __init__(self, *args, **kwargs):
         ''' setup cursor and db '''
         super().__init__(*args, **kwargs)
@@ -46,13 +48,6 @@ class test_dbStorage(unittest.TestCase):
     def setUp(self):
         """ Set up test environment """
         self.cur = self.db.cursor()
-        print('\n')
-        # self.cur.execute('SET foreign_key_checks = 0;' +
-        #                  'DROP TABLES IF EXISTS amenities, cities, place_amenity, places, reviews, states, users;' +
-        #                  'SET foreign_key_checks = 1;');
-        # Base.metadata.create_all(storage._DBStorage__engine)
-        # storage.reload()
-        # storage.all().clear()
 
     def tearDown(self):
         """ Remove storage file at end of tests """
@@ -61,7 +56,6 @@ class test_dbStorage(unittest.TestCase):
             self.cur.close()
         except Exception:
             pass
-
 
     def test_new(self):
         """ New object is added to __objects after only saving """
@@ -94,7 +88,8 @@ class test_dbStorage(unittest.TestCase):
                          '(%s, %s, %s, %s)',
                          [s1, d, d, s2])
         storage.reload()
-        self.assertTrue(any(True for v in storage.all(Amenity).values() if v.id == s1 and v.name == s2))
+        self.assertTrue(any(True for v in storage.all(Amenity).values()
+                            if v.id == s1 and v.name == s2))
 
     def test_delete(self):
         ''' testing delete function '''
@@ -124,5 +119,5 @@ class test_dbStorage(unittest.TestCase):
     def test_storage_var_created(self):
         """ FileStorage object storage created """
         from models.engine.db_storage import DBStorage
-        
+
         self.assertEqual(type(storage), DBStorage)
