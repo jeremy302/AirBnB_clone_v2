@@ -54,12 +54,14 @@ def get_amenities(self):
                           if v.id in self.amenity_ids], on_append)
 
 
-def set_amenities(self, ls):
+def set_amenities(self, v):
     ''' sets list of amenities of the current place '''
     from models import storage
     from models.amenity import Amenity
 
-    self.amenity_ids = [v.id for v in ls]
+    if type(v) is Amenity and  v not in self.amenity_ids:
+        self.amenity_ids.append(v)
+    # self.amenity_ids = [v.id for v in ls]
 
 
 class Place(BaseModel, Base):
