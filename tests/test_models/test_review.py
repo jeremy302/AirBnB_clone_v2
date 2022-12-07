@@ -4,6 +4,12 @@ from tests.test_models.test_base_model import test_basemodel
 from models.review import Review
 
 
+def use_db():
+    ''' checks if storage engine is a database '''
+    import os
+    return os.getenv('HBNB_TYPE_STORAGE') == 'db'
+
+
 class test_review(test_basemodel):
     """ """
 
@@ -16,14 +22,16 @@ class test_review(test_basemodel):
     def test_place_id(self):
         """ """
         new = self.value()
-        self.assertEqual(type(new.place_id), str)
+        self.assertEqual(type(new.place_id), str
+                         if not use_db() else type(None))
 
     def test_user_id(self):
         """ """
         new = self.value()
-        self.assertEqual(type(new.user_id), str)
+        self.assertEqual(type(new.user_id), str
+                         if not use_db() else type(None))
 
     def test_text(self):
         """ """
         new = self.value()
-        self.assertEqual(type(new.text), str)
+        self.assertEqual(type(new.text), str if not use_db() else type(None))

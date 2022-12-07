@@ -22,6 +22,6 @@ def get_cities(self):
 class State(BaseModel, Base):
     """ State class """
     __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
+    name = Column(String(128), nullable=False) if use_db() else ''
     cities = (relationship('City', backref='state', cascade=['all'])
               if use_db() else property(get_cities))
