@@ -68,6 +68,7 @@ class DBStorage():
         if obj:
             sess = self.get_session()
             sess.delete(obj)
+            sess.commit()
 
     def reload(self):
         ''' reloads data from the database '''
