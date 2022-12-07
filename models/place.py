@@ -82,6 +82,6 @@ class Place(BaseModel, Base):
 
     reviews = (relationship('Review', backref='place', cascade='all')
                if use_db() else property(get_reviews))
-    amenities = (relationship('Amenity', backref='place_amenities'
+    amenities = (relationship('Amenity', backref='place_amenities',
                               secondary=place_amenity, viewonly=False)
                  if use_db() else property(get_amenities, set_amenities))
