@@ -122,7 +122,7 @@ class test_fileStorage(unittest.TestCase):
         storage.delete(new)
         self.assertEqual(storage.all(), {})
 
-    def test_all(self):
+    def test_all_class(self):
         ''' test all() for different classes '''
         from models.amenity import Amenity
 

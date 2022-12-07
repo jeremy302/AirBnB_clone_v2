@@ -50,7 +50,8 @@ def get_amenities(self):
 
     # def on_append(v):
     #     self.amenity_ids.append(v.id)
-    return [v for v in storage.all(Amenity).values() if v.id in self.amenity_ids]
+    return [v for v in storage.all(Amenity).values()
+            if v.id in self.amenity_ids]
 
 
 def set_amenities(self, v):
@@ -58,7 +59,7 @@ def set_amenities(self, v):
     from models import storage
     from models.amenity import Amenity
 
-    if type(v) is Amenity and  v not in self.amenity_ids:
+    if type(v) is Amenity and v not in self.amenity_ids:
         self.amenity_ids.append(v)
         return
     # elif type(v) == list or type(v) == AmenitiesList:
