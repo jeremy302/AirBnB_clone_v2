@@ -20,19 +20,19 @@ def use_db():
     return os.getenv('HBNB_TYPE_STORAGE') == 'db'
 
 
-class AmenitiesList(list):
-    ''' class for a list of amenities '''
-    def __init__(self, ls, on_append):
-        ''' constructor for the list'''
-        list.__init__(ls, self)
-        self.on_append = on_append
-        # for v in ls:
-        #     self.append(v)
+# class AmenitiesList(list):
+#     ''' class for a list of amenities '''
+#     def __init__(self, ls, on_append):
+#         ''' constructor for the list'''
+#         list.__init__(ls, self)
+#         self.on_append = on_append
+#         # for v in ls:
+#         #     self.append(v)
 
-    def append(self, v):
-        ''' appends an object to the list '''
-        super().append(v)
-        self.on_append(v)
+#     def append(self, v):
+#         ''' appends an object to the list '''
+#         super().append(v)
+#         self.on_append(v)
 
 
 def get_reviews(self):
@@ -48,8 +48,8 @@ def get_amenities(self):
     from models import storage
     from models.amenity import Amenity
 
-    def on_append(v):
-        self.amenity_ids.append(v.id)
+    # def on_append(v):
+    #     self.amenity_ids.append(v.id)
     return [v for v in storage.all(Amenity).values() if v.id in self.amenity_ids]
 
 
@@ -61,8 +61,8 @@ def set_amenities(self, v):
     if type(v) is Amenity and  v not in self.amenity_ids:
         self.amenity_ids.append(v)
         return
-    elif type(v) == list or type(v) == AmenitiesList:
-        self.amenity_ids = [i.id for i in v]
+    # elif type(v) == list or type(v) == AmenitiesList:
+    #     self.amenity_ids = [i.id for i in v]
 
 
 class Place(BaseModel, Base):
@@ -82,6 +82,6 @@ class Place(BaseModel, Base):
 
     reviews = (relationship('Review', backref='place', cascade='all')
                if use_db() else property(get_reviews))
-    amenities = (relationship('Amenity',
+    amenities = (relationship('Amenity', backref='place_amenities'
                               secondary=place_amenity, viewonly=False)
                  if use_db() else property(get_amenities, set_amenities))
