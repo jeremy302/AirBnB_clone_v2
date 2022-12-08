@@ -23,6 +23,7 @@ user = os.getenv('HBNB_MYSQL_USER')
 passwd = os.getenv('HBNB_MYSQL_PWD')
 dbname = os.getenv('HBNB_MYSQL_DB')
 
+
 def rstr():
     ''' returns a random string'''
     import uuid
@@ -66,10 +67,12 @@ class TestHBNBCommand(unittest.TestCase):
     #             cons.onecmd('create User')
     #         # creating a User instance
     #         clear_stream(cout)
-    #         cons.onecmd('create User email="john25@gmail.com" password="123"')
+            # cons.onecmd(
+            #     'create User email="john25@gmail.com" password="123"')
     #         mdl_id = cout.getvalue().strip()
 
-    #         self.cur.execute('SELECT * FROM users WHERE id="{}"'.format(mdl_id))
+            # self.cur.execute('SELECT * FROM users WHERE id="{}"'.format(
+            #     mdl_id))
     #         result = self.cur.fetchone()
     #         self.assertTrue(result is not None)
     #         self.assertIn('john25@gmail.com', result)
@@ -85,7 +88,8 @@ class TestHBNBCommand(unittest.TestCase):
     #         # showing a User instance
     #         obj = User(email="john25@gmail.com", password="123")
 
-    #         self.cur.execute('SELECT * FROM users WHERE id="{}"'.format(obj.id))
+            # self.cur.execute('SELECT * FROM users WHERE id="{}"'.format(
+            #     obj.id))
     #         result = self.cur.fetchone()
     #         self.assertTrue(result is None)
     #         cons.onecmd('show User {}'.format(obj.id))
@@ -95,7 +99,8 @@ class TestHBNBCommand(unittest.TestCase):
     #         )
     #         obj.save()
 
-    #         self.cur.execute('SELECT * FROM users WHERE id="{}"'.format(obj.id))
+            # self.cur.execute('SELECT * FROM users WHERE id="{}"'.format(
+            #     obj.id))
     #         clear_stream(cout)
     #         cons.onecmd('show User {}'.format(obj.id))
     #         result = self.cur.fetchone()
@@ -105,20 +110,26 @@ class TestHBNBCommand(unittest.TestCase):
     #         self.assertIn('john25@gmail.com', cout.getvalue())
     #         self.assertIn('123', cout.getvalue())
 
-    # @unittest.skipIf(
-    #     os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
-    # def test_db_count(self):
-    #     """Tests the count command with the database storage.
-    #     """
-    #     with patch('sys.stdout', new=StringIO()) as cout:
-    #         cons = HBNBCommand()
-    #         self.cur.execute('SELECT COUNT(*) FROM states;')
-    #         res = self.cur.fetchone()
-    #         prev_count = int(res[0])
-    #         cons.onecmd('create State name="Enugu"')
-    #         clear_stream(cout)
-    #         cons.onecmd('count State')
-    #         cnt = cout.getvalue().strip()
-    #         self.assertEqual(int(cnt), prev_count + 1)
-    #         clear_stream(cout)
-    #         cons.onecmd('count State')
+    @unittest.skipIf(
+        os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
+    def test_db_count(self):
+        """Tests the count command with the database storage.
+        """
+        with patch('sys.stdout', new=StringIO()) as cout:
+            cons = HBNBCommand()
+            db = connect(host=host, user=user, passwd=passwd, db=dbname)
+            cur = db.cursor()
+
+            cur.execute('SELECT COUNT(*) FROM states;')
+            res = cur.fetchone()
+            prev_count = int(res[0])
+            cons.onecmd('create State name="Enugu"')
+            clear_stream(cout)
+            cons.onecmd('count State')
+            cnt = cout.getvalue().strip()
+            self.assertEqual(int(cnt), prev_count + 1)
+            clear_stream(cout)
+            cons.onecmd('count State')
+
+            cur.close()
+            db.close()
