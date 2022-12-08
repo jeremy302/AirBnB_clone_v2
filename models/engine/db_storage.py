@@ -67,7 +67,10 @@ class DBStorage():
     def save(self):
         ''' commit changes in the current session to the database  '''
         sess = self.get_session()
-        sess.commit()
+        try:
+            sess.commit()
+        except Exception:
+            sess.rollback()
 
     def delete(self, obj=None):
         ''' deletes an object from the database '''
