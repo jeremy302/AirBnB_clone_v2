@@ -80,7 +80,7 @@ class TestHBNBCommand(unittest.TestCase):
             self.assertIn("'height': 5.9", cout.getvalue().strip())
 
     @unittest.skipIf(
-        os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
+        os.getenv('HBNB_TYPE_STORAGE') != '_db', 'DBStorage test')
     def test_db_create(self):
         """Tests the create command with the database storage.
         """
@@ -101,7 +101,7 @@ class TestHBNBCommand(unittest.TestCase):
             self.assertIn('123', result)
 
     @unittest.skipIf(
-        os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
+        os.getenv('HBNB_TYPE_STORAGE') != '_db', 'DBStorage test')
     def test_db_show(self):
         """Tests the show command with the database storage.
         """
