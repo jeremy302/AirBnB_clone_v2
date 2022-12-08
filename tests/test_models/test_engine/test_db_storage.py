@@ -65,58 +65,58 @@ class test_dbStorage(unittest.TestCase):
         row = self.cur.fetchone()
         self.assertTrue(row is not None and s in row)
 
-    def test_all(self):
-        """ __objects is properly returned """
-        self.assertIsInstance(storage.all(), dict)
+    # def test_all(self):
+    #     """ __objects is properly returned """
+    #     self.assertIsInstance(storage.all(), dict)
 
-        new = State(name=rstr())
-        self.assertTrue(new not in storage.all().values())
-        new.save()
-        self.assertTrue(new in storage.all().values())
-        self.assertTrue(new in storage.all(State).values())
-        self.assertTrue(new not in storage.all(Place).values())
+    #     new = State(name=rstr())
+    #     self.assertTrue(new not in storage.all().values())
+    #     new.save()
+    #     self.assertTrue(new in storage.all().values())
+    #     self.assertTrue(new in storage.all(State).values())
+    #     self.assertTrue(new not in storage.all(Place).values())
 
-    def test_reload(self):
-        ''' testing reload function '''
-        s1 = rstr()
-        s2 = rstr()
-        d = str(datetime.utcnow())
+    # def test_reload(self):
+    #     ''' testing reload function '''
+    #     s1 = rstr()
+    #     s2 = rstr()
+    #     d = str(datetime.utcnow())
 
-        self.cur.execute('INSERT INTO amenities ' +
-                         '(id, created_at, updated_at, name) VALUES ' +
-                         '(%s, %s, %s, %s)',
-                         [s1, d, d, s2])
-        storage.reload()
-        self.assertTrue(any(True for v in storage.all(Amenity).values()
-                            if v.id == s1 and v.name == s2))
+    #     self.cur.execute('INSERT INTO amenities ' +
+    #                      '(id, created_at, updated_at, name) VALUES ' +
+    #                      '(%s, %s, %s, %s)',
+    #                      [s1, d, d, s2])
+    #     storage.reload()
+    #     self.assertTrue(any(True for v in storage.all(Amenity).values()
+    #                         if v.id == s1 and v.name == s2))
 
-    def test_delete(self):
-        ''' testing delete function '''
-        new = State(name=rstr())
-        new.save()
-        storage.delete(new)
-        self.cur.execute(f'SELECT * FROM states WHERE id="{new.id}"')
-        self.assertEqual(self.cur.fetchone(), None)
+    # def test_delete(self):
+    #     ''' testing delete function '''
+    #     new = State(name=rstr())
+    #     new.save()
+    #     storage.delete(new)
+    #     self.cur.execute(f'SELECT * FROM states WHERE id="{new.id}"')
+    #     self.assertEqual(self.cur.fetchone(), None)
 
-    def test_save(self):
-        ''' testing save function '''
-        new = State(name=rstr())
-        self.cur.execute(f'SELECT * FROM states WHERE id="{new.id}"')
-        self.assertEqual(self.cur.fetchone(), None)
-        new.save()
-        self.cur.execute(f'SELECT * FROM states WHERE id="{new.id}"')
-        self.assertTrue(self.cur.fetchone() is not None)
+    # def test_save(self):
+    #     ''' testing save function '''
+    #     new = State(name=rstr())
+    #     self.cur.execute(f'SELECT * FROM states WHERE id="{new.id}"')
+    #     self.assertEqual(self.cur.fetchone(), None)
+    #     new.save()
+    #     self.cur.execute(f'SELECT * FROM states WHERE id="{new.id}"')
+    #     self.assertTrue(self.cur.fetchone() is not None)
 
-    def test_key_format(self):
-        """ Key is properly formatted """
-        new = State(name=rstr())
-        new.save()
+    # def test_key_format(self):
+    #     """ Key is properly formatted """
+    #     new = State(name=rstr())
+    #     new.save()
 
-        key = 'State' + '.' + new.to_dict()['id']
-        self.assertEqual(storage.all()[key], new)
+    #     key = 'State' + '.' + new.to_dict()['id']
+    #     self.assertEqual(storage.all()[key], new)
 
-    def test_storage_var_created(self):
-        """ FileStorage object storage created """
-        from models.engine.db_storage import DBStorage
+    # def test_storage_var_created(self):
+    #     """ FileStorage object storage created """
+    #     from models.engine.db_storage import DBStorage
 
-        self.assertEqual(type(storage), DBStorage)
+    #     self.assertEqual(type(storage), DBStorage)
