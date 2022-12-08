@@ -5,6 +5,7 @@ import uuid
 import unittest
 from datetime import datetime
 
+import MySQLdb
 from MySQLdb import connect
 
 from models import storage
