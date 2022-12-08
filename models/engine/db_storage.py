@@ -21,6 +21,12 @@ class DBStorage():
                                       pool_pre_ping=True)
         if is_test:
             from models.base_model import Base
+            from models.user import User
+            from models.place import Place
+            from models.state import State
+            from models.city import City
+            from models.amenity import Amenity
+            from models.review import Review
             Base.metadata.drop_all(self.__engine)
 
     def get_session(self):
