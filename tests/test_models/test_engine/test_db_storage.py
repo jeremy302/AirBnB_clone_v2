@@ -19,6 +19,7 @@ from models.review import Review
 
 
 host = os.getenv('HBNB_MYSQL_HOST', 'localhost')
+port = 3306
 user = os.getenv('HBNB_MYSQL_USER')
 passwd = os.getenv('HBNB_MYSQL_PWD')
 dbname = os.getenv('HBNB_MYSQL_DB')
@@ -40,10 +41,8 @@ class test_dbStorage(unittest.TestCase):
         self.assertFalse(new in storage.all().values())
         new.save()
         self.assertTrue(new in storage.all().values())
-        db = MySQLdb.connect(host=os.getenv('HBNB_MYSQL_HOST'), port=3306,
-                              user=os.getenv('HBNB_MYSQL_USER'),
-                              passwd=os.getenv('HBNB_MYSQL_PWD'),
-                              db=os.getenv('HBNB_MYSQL_DB'))
+        db = MySQLdb.connect(host=host, port=port, user=user,
+                             passwd=passwd, db=dbname)
         cur = db.cursor()
         cur.execute('SELECT * FROM users WHERE id="{}"'.format(new.id))
         result = cur.fetchone()
@@ -56,31 +55,22 @@ class test_dbStorage(unittest.TestCase):
         db.close()
 
     def test_delete(self):
-        """ Object is correctly deleted from database """
-        new = User(
-            email='john2020@gmail.com',
-            password='password',
-            first_name='John',
-            last_name='Zoldyck'
-        )
+        """ tests deletion """
+        new = User(email='abc@gmail.com', password='123',
+                   first_name='john', last_name='doe')
         obj_key = 'User.{}'.format(new.id)
-        db = MySQLdb.connect(
-            host=os.getenv('HBNB_MYSQL_HOST'),
-            port=3306,
-            user=os.getenv('HBNB_MYSQL_USER'),
-            passwd=os.getenv('HBNB_MYSQL_PWD'),
-            db=os.getenv('HBNB_MYSQL_DB')
-        )
+        db = MySQLdb.connect(host=host, port=port, user=user,
+                             passwd=passwd, db=dbname)
         new.save()
         self.assertTrue(new in storage.all().values())
         cur = db.cursor()
         cur.execute('SELECT * FROM users WHERE id="{}"'.format(new.id))
         result = cur.fetchone()
         self.assertTrue(result is not None)
-        self.assertIn('john2020@gmail.com', result)
-        self.assertIn('password', result)
-        self.assertIn('John', result)
-        self.assertIn('Zoldyck', result)
+        self.assertIn('abc@gmail.com', result)
+        self.assertIn('123', result)
+        self.assertIn('john', result)
+        self.assertIn('doe', result)
         self.assertIn(obj_key, storage.all(User).keys())
         new.delete()
         self.assertNotIn(obj_key, storage.all(User).keys())
@@ -88,50 +78,36 @@ class test_dbStorage(unittest.TestCase):
         db.close()
 
     def test_reload(self):
-        """ Tests the reloading of the database session """
-        db = MySQLdb.connect(
-            host=os.getenv('HBNB_MYSQL_HOST'),
-            port=3306,
-            user=os.getenv('HBNB_MYSQL_USER'),
-            passwd=os.getenv('HBNB_MYSQL_PWD'),
-            db=os.getenv('HBNB_MYSQL_DB')
-        )
+        """ reload """
+        db = MySQLdb.connect(host=host, port=port, user=user,
+                             passwd=passwd, db=dbname)
         cur = db.cursor()
         cur.execute(
             'INSERT INTO users(id, created_at, updated_at, email, password' +
             ', first_name, last_name) VALUES(%s, %s, %s, %s, %s, %s, %s);',
             [
-                '4448-by-me',
-                str(datetime.now()),
-                str(datetime.now()),
-                'ben_pike@yahoo.com',
-                'pass',
-                'Benjamin',
-                'Pike',
+                '5566',
+                str(datetime.utcnow()),
+                str(datetime.utcnow()),
+                'abc@gmail.com',
+                '123',
+                'john',
+                'joe',
             ]
         )
-        self.assertNotIn('User.4448-by-me', storage.all())
+        self.assertNotIn('User.5566', storage.all())
         db.commit()
         storage.reload()
-        self.assertIn('User.4448-by-me', storage.all())
+        self.assertIn('User.5566', storage.all())
         cur.close()
         db.close()
 
     def test_save(self):
-        """ object is successfully saved to database """
-        new = User(
-            email='john2020@gmail.com',
-            password='password',
-            first_name='John',
-            last_name='Zoldyck'
-        )
-        db = MySQLdb.connect(
-            host=os.getenv('HBNB_MYSQL_HOST'),
-            port=3306,
-            user=os.getenv('HBNB_MYSQL_USER'),
-            passwd=os.getenv('HBNB_MYSQL_PWD'),
-            db=os.getenv('HBNB_MYSQL_DB')
-        )
+        """ tests saving """
+        db = MySQLdb.connect(host=host, port=port, user=user,
+                             passwd=passwd, db=dbname)
+        new = User(email='abc@gmail.com', password='123',
+                   first_name='john', last_name='doe')
         cur = db.cursor()
         cur.execute('SELECT * FROM users WHERE id="{}"'.format(new.id))
         result = cur.fetchone()
@@ -140,13 +116,8 @@ class test_dbStorage(unittest.TestCase):
         self.assertTrue(result is None)
         self.assertFalse(new in storage.all().values())
         new.save()
-        db1 = MySQLdb.connect(
-            host=os.getenv('HBNB_MYSQL_HOST'),
-            port=3306,
-            user=os.getenv('HBNB_MYSQL_USER'),
-            passwd=os.getenv('HBNB_MYSQL_PWD'),
-            db=os.getenv('HBNB_MYSQL_DB')
-        )
+        db1 = MySQLdb.connect(host=host, port=port, user=user,
+                              passwd=passwd, db=dbname)
         cur1 = db1.cursor()
         cur1.execute('SELECT * FROM users WHERE id="{}"'.format(new.id))
         result = cur1.fetchone()
@@ -161,32 +132,28 @@ class test_dbStorage(unittest.TestCase):
         db.close()
 
     def test_storage_var_created(self):
-        """ DBStorage object storage created """
+        """ testing storage type """
         from models.engine.db_storage import DBStorage
+
         self.assertEqual(type(storage), DBStorage)
 
     def test_new_and_save(self):
         '''testing  the new and save methods'''
-        db = MySQLdb.connect(user=os.getenv('HBNB_MYSQL_USER'),
-                             host=os.getenv('HBNB_MYSQL_HOST'),
-                             passwd=os.getenv('HBNB_MYSQL_PWD'),
-                             port=3306,
-                             db=os.getenv('HBNB_MYSQL_DB'))
-        new_user = User(**{'first_name': 'jack',
-                           'last_name': 'bond',
-                           'email': 'jack@bond.com',
-                           'password': 12345})
+        db = MySQLdb.connect(host=host, port=port, user=user,
+                             passwd=passwd, db=dbname)
+
+        new_user = User(**{'email': 'abc@gmail.com',
+                           'password': 123,
+                           'first_name': 'john',
+                           'last_name': 'doe'})
         cur = db.cursor()
         cur.execute('SELECT COUNT(*) FROM users')
         old_count = cur.fetchall()
         cur.close()
         db.close()
         new_user.save()
-        db = MySQLdb.connect(user=os.getenv('HBNB_MYSQL_USER'),
-                             host=os.getenv('HBNB_MYSQL_HOST'),
-                             passwd=os.getenv('HBNB_MYSQL_PWD'),
-                             port=3306,
-                             db=os.getenv('HBNB_MYSQL_DB'))
+        db = MySQLdb.connect(host=host, port=port, user=user,
+                             passwd=passwd, db=dbname)
         cur = db.cursor()
         cur.execute('SELECT COUNT(*) FROM users')
         new_count = cur.fetchall()
