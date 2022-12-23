@@ -10,4 +10,14 @@ def do_pack():
     ''' <TODO> doc for code '''
     os.path.isdir("versions") or os.mkdir("versions")
     now = datetime.now()
-    return None
+    filename = ("versions/web_static_{}{}{}{}{}{}.tgz".
+                format(now.year, now.month, now.day, now.hour,
+                       now.minute, now.second))
+    try:
+        print("Packing web_static to {}".format(filename))
+        local("tar -fczv {} web_static".format(filename))
+        size = os.path.getsize(filename)
+        print("web_static packed: {} -> {} Bytes".format(flename, size))
+    except Exception:
+        return None
+    return filename
