@@ -17,7 +17,7 @@ def do_pack():
         print("Packing web_static to {}".format(filename))
         local("tar -fczv {} web_static".format(filename))
         size = os.path.getsize(filename)
-        print("web_static packed: {} -> {} Bytes".format(flename, size))
+        print("web_static packed: {} -> {} Bytes".format(filename, size))
     except Exception:
         return None
     return filename
