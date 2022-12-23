@@ -2,7 +2,7 @@
 ''' <TODO> doc for code '''
 import os
 from datetime import datetime
-from fabric.api import local, runs_once
+from fabric.api import local, runs_once, put, run, env
 
 
 @runs_once
@@ -35,9 +35,9 @@ def do_deploy(archive_path):
         put(archive_path, "/tmp/{}".format(basename))
         run("mkdir -p {}".format(target_dir))
         run("tar -xzf /tmp/{} -C {}".format(basename, target_dir))
-        run("rm -rf /tmp/{}".format(basename))
+        run("rm /tmp/{}".format(basename))
         run("mv {}web_static/* {}".format(target_dir, basename))
-        run("rm -rf {}web_static".format(target_dir))
+        run("rm -r {}web_static".format(target_dir))
         run("rm -rf /data/web_static/current")
         run("ln -s {} /data/web_static/current".format(target_dir))
         print('New version deployed!')
