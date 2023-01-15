@@ -17,7 +17,7 @@ def hbnb():
 
 
 @app.route('/c/<text>', strict_slashes=False)
-def py_cool(text):
+def c_fun(text):
     ''' <TODO> add documentation '''
     return 'C {}'.format(text.replace('_', ' '))
 
