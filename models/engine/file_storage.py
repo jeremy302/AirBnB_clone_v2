@@ -60,3 +60,7 @@ class FileStorage:
         key = obj.to_dict()['__class__'] + '.' + obj.id
         if key in self.all(type(obj)):
             del self.all()[key]
+
+    def close(self):
+        ''' closes instance '''
+        self.reload()
