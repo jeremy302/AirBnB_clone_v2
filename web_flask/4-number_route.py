@@ -29,7 +29,7 @@ def py_cool(text):
     return 'Python {}'.format(text.replace('_', ' '))
 
 
-@app.route('/number/<n>', strict_slashes=False)
+@app.route('/number/<int: n>', strict_slashes=False)
 def number(n):
     ''' <TODO> add documentation '''
     if n.isdigit():
