@@ -19,7 +19,7 @@ def hbnb():
 @app.route('/c/<text>', strict_slashes=False)
 def py_cool(text):
     ''' <TODO> add documentation '''
-    return f"C {text.replace('_', ' ')}"
+    return 'C {}'.format(text.replace('_', ' '))
 
 
 if __name__ == '__main__':
