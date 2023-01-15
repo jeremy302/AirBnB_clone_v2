@@ -3,7 +3,8 @@
 from flask import Flask
 app = Flask(__name__)
 
+
 @app.route('/', strict_slashes=False)
-def hello_world():
+def index():
     ''' <TODO> add documentation '''
     return 'Hello HBNB'
