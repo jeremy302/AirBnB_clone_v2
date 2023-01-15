@@ -17,7 +17,7 @@ def hbnb():
 
 
 @app.route('/c/<text>', strict_slashes=False)
-def hbnb(text):
+def c(text):
     ''' <TODO> add documentation '''
     return f"C {text.replace('_', ' ')}"
 
