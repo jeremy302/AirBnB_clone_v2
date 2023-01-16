@@ -7,12 +7,10 @@ from models.state import State
 app = Flask(__name__)
 
 
-@app.route('/states_list', strict_slashes=False)
+@app.route('/cities_by_states', strict_slashes=False)
 def get_states():
     ''' <TODO> add documentation '''
     states = sorted(storage.all(State).values(), key=lambda k: k.name)
-    for state in states:
-        state.cities.sort(key=lambda k: k.name)
     return render_template('7-states_list.html', states=states)
 
 
