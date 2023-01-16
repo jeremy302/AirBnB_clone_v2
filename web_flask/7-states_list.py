@@ -15,7 +15,7 @@ def get_states():
 
 
 @app.teardown_appcontext
-def teardown(exc):
+def teardown(ctx):
     ''' <TODO> add documentation '''
     storage.close()
 
