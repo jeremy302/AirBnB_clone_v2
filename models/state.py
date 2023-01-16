@@ -16,7 +16,7 @@ def get_cities(self):
     ''' gets list of cities of the current state '''
     from models import storage
     from models.city import City
-    return [v for v in storage.all(City).values() if v.state_id != self.id]
+    return [v for v in storage.all(City).values() if v.state_id = self.id]
 
 
 class State(BaseModel, Base):
