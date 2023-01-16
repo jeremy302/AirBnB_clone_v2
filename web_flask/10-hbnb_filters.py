@@ -3,19 +3,24 @@
 from flask import Flask, render_template
 from models import storage
 from models.state import State
+from models.amenity import Amenity
+from models.place import Place
+
 
 app = Flask(__name__)
 
 
 @app.route('/hbnb_filters', strict_slashes=False)
 def hbnb_filters():
-''' <TODO> add documentation '''
+    ''' <TODO> add documentation '''
     states = sorted((storage.all(State).values()), key=lambda x: x.name)
     for state in states:
         state.cities.sort(key=lambda x: x.name)
-    amenities = sorted(list(storage.all(Amenity).values()), key=lambda x: x.name)
+    amenities = sorted(list(storage.all(Amenity).values()),
+                       key=lambda x: x.name)
 
-    return render_template('10-hbnb_filters.html', states=states, amenities=amenities)
+    return render_template('10-hbnb_filters.html',
+                           states=states, amenities=amenities)
 
 
 @app.teardown_appcontext
