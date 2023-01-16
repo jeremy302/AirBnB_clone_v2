@@ -13,7 +13,7 @@ def get_states():
     states = sorted(storage.all(State).values(), key=lambda k: k.name)
     for state in states:
         state.cities.sort(key=lambda k: k.name)
-    return render_template('7-states_list.html', states=states)
+    return render_template('8-cities_by_states.html', states=states)
 
 
 @app.teardown_appcontext
