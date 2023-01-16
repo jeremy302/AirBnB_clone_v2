@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 
 @app.route('/cities_by_states', strict_slashes=False)
-def get_states():
+def get_states_cities():
     ''' <TODO> add documentation '''
     states = sorted(storage.all(State).values(), key=lambda k: k.name)
     for state in states:
