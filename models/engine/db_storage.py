@@ -99,4 +99,4 @@ class DBStorage():
 
     def close(self):
         ''' closes instance '''
-        return self
+        self.__session.close()
