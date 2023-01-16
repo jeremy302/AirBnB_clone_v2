@@ -24,7 +24,7 @@ def c_fun(text):
 
 @app.route('/python', defaults={'text': 'is cool'},  strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
-def py_cool(text):
+def py_cool(text='is cool'):
     ''' <TODO> add documentation '''
     return 'Python {}'.format(text.replace('_', ' '))
 
