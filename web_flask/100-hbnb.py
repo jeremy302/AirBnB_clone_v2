@@ -12,15 +12,13 @@ app = Flask(__name__)
 
 @app.route('/hbnb')
 def hbnb():
-''' <TODO> add documentation '''
+    ''' <TODO> add documentation '''
     states = sorted(list(storage.all(State).values()), key=lambda x: x.name)
-    amenities = list(storage.all(Amenity).values(), key=lambda x: x.name)
-    places = list(storage.all(Place).values(), key=lambda x: x.name)
+    amenities = sorted(list(storage.all(Amenity).values()), key=lambda x: x.name)
+    places = sorted(list(storage.all(Place).values()), key=lambda x: x.name)
 
     for state in states:
         state.cities.sort(key=lambda x: x.name)
-    for place in places:
-        place.description = Markup(place.description)
 
     return render_template('100-hbnb.html', states=states,
                            amenities=amenities, places=places)
